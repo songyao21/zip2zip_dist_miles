@@ -1,12 +1,11 @@
-cd /Users/songyaoh/Documents/Workbench/F3/F3_SIR/build
-
+cd ./zip2zip_dist_miles
 // ZIP_Code_Population_Weighted_Centroids is populatio-weighted centoid.
 // downloaded from 
 // https://hudgis-hud.opendata.arcgis.com/datasets/HUD::zip-code-population-weighted-centroids
 
 
 // prepare zip coordiantes data for cross tabulation
-import delimited "./input/ZIP_Code_Population_Weighted_Centroids.csv", clear
+import delimited "ZIP_Code_Population_Weighted_Centroids.csv", clear
 
 keep std_zip5 latitude longitude
 rename latitude lat_other
@@ -28,7 +27,7 @@ forval i=1/`seg'{
 
 //cross the main file with each of the 100
 forval i=1/`seg'{
-	import delimited "./input/ZIP_Code_Population_Weighted_Centroids.csv", clear
+	import delimited "ZIP_Code_Population_Weighted_Centroids.csv", clear
 
 	keep std_zip5 latitude longitude
 	rename latitude lat_own
@@ -48,7 +47,7 @@ forval i=1/`seg'{
 	drop lat_*2 lon_*2
 
 	order zip5_other dist_miles, after(zip5_own)
-	keep if dist_miles<=100 //only keep those zip5 paris within 100 miles
+	keep if dist_miles<=10 //only keep those zip5 paris within 10 miles
 	
 	save ./temp/zip5_dist`i', replace
 }
@@ -58,4 +57,4 @@ forval i=2/`seg'{
 	append using ./temp/zip5_dist`i'
 }
 
-save ./output/zip2zip_dist_miles100, replace
+export delimited "./zip2zip_dist_miles10.csv", replace
