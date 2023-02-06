@@ -39,7 +39,7 @@ forval i=1/`seg'{
 	geodist lat_own lon_own lat_other lon_own, gen(dist_miles) miles
 
 	order zip5_other dist_miles, after(zip5_own)
-	keep if dist_miles<=1 //only keep those zip5 paris within 1 miles to save space
+	keep if dist_miles<=5 //only keep those zip5 paris within 1 miles as a demo sample
 	// the full data with all pairs independent of distances are nearly 40GB in 
 	// stata format, even larger in CSV.
 	
@@ -51,4 +51,4 @@ forval i=2/`seg'{
 	append using ./temp/zip5_dist`i'
 }
 
-export delimited "./zip2zip_dist_miles5.csv", replace
+save zip2zip_dist_miles1, replace
