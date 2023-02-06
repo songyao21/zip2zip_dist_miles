@@ -39,7 +39,7 @@ forval i=1/`seg'{
 	geodist lat_own lon_own lat_other lon_own, gen(dist_miles) miles
 
 	order zip5_other dist_miles, after(zip5_own)
-	keep if dist_miles<=5 //only keep those zip5 paris within 1 miles as a demo sample
+	keep if dist_miles<=1 //only keep those zip5 paris within 1 miles as a demo sample
 	// the full data with all pairs independent of distances are nearly 40GB in 
 	// stata format, even larger in CSV.
 	
