@@ -3,7 +3,6 @@ cd ./zip2zip_dist_miles
 // downloaded from 
 // https://hudgis-hud.opendata.arcgis.com/datasets/HUD::zip-code-population-weighted-centroids
 
-
 // prepare zip coordiantes data for cross tabulation
 import delimited "ZIP_Code_Population_Weighted_Centroids.csv", clear
 
@@ -37,17 +36,12 @@ forval i=1/`seg'{
 	cross using ./temp/zip5_seg`i'
 	drop if zip5_own==zip5_other
 
-	foreach var in own other{
-		gen lat_`var'2 = lat_`var' * 69 /* converts degrees latitude to miles (roughly) */
-		gen lon_`var'2 = lon_`var' * 52 /* converts degrees longitude to miles (roughly), 
-		NOTE: longitude conversion varies depending on vicinity to poles */
-	}
-
-	gen dist_miles = ((lat_own2 - lat_other2)^2 + (lon_own2 - lon_other2)^2)^0.5
-	drop lat_*2 lon_*2
+	geodist lat_own lon_own lat_other lon_own, gen(dist_miles) miles
 
 	order zip5_other dist_miles, after(zip5_own)
-	keep if dist_miles<=10 //only keep those zip5 paris within 10 miles
+	keep if dist_miles<=1 //only keep those zip5 paris within 1 miles to save space
+	// the full data with all pairs independent of distances are nearly 40GB in 
+	// stata format, even larger in CSV.
 	
 	save ./temp/zip5_dist`i', replace
 }
@@ -57,4 +51,4 @@ forval i=2/`seg'{
 	append using ./temp/zip5_dist`i'
 }
 
-export delimited "./zip2zip_dist_miles10.csv", replace
+export delimited "./zip2zip_dist_miles5.csv", replace
